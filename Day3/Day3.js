@@ -13,17 +13,18 @@ const p4 =
 function main() {
   // const wires = parseRaw(p4);
   // const [wp1, wp2] = [parseWirePath(wires.wi1), parseWirePath(wires.wi2)];
-  // const closest = findClosestCross(findIntersections(wp1, wp2))[0];
-  // console.log(closest.x + closest.y);
+  // const closest = findClosestCross(findIntersections(wp1, wp2));
+  // console.log(closest);
   fs.readFile('input', 'utf8', (err, data) => {
     if (err) {
       throw err;
     } else {
       const wires = parseRaw(data);
       const [wp1, wp2] = [parseWirePath(wires.wi1), parseWirePath(wires.wi2)];
-      const closest = findClosestCross(findIntersections(wp1, wp2));
-      // console.log(closest);
-      console.log(closest[0].x + closest[0].y);
+      // const closest = findClosestCross(findIntersections(wp1, wp2));
+      // console.log(closest[0].x + closest[0].y);
+      const shortest = findShortestDistToCross(findIntersections(wp1, wp2));
+      console.log(shortest);
     }
   });
 }
@@ -76,7 +77,11 @@ function findIntersections(arr1, arr2) {
   for (let i = 0; i < arr1.length; i++) {
     for (let j = i; j < arr2.length; j++) {
       if (arr1[i].x === arr2[j].x && arr1[i].y === arr2[j].y) {
-        intersections.push({ x: arr1[i].x, y: arr1[i].y });
+        intersections.push({
+          x: arr1[i].x,
+          y: arr1[i].y,
+          steps: arr1[i].steps + arr2[j].steps,
+        });
       }
     }
   }
@@ -88,6 +93,10 @@ function findClosestCross(inter) {
   return inter.sort((a, b) =>
     Math.abs(a.x) + Math.abs(a.y) > Math.abs(b.x) + Math.abs(b.y) ? 1 : -1
   );
+}
+
+function findShortestDistToCross(inter) {
+  return inter.sort((a, b) => (a.steps > b.steps ? 1 : -1));
 }
 
 // console.log(
